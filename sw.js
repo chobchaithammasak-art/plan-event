@@ -1,6 +1,6 @@
 // เก็บหน้าเปิดแอป + ไอคอนไว้ในเครื่อง ให้เปิดเร็วขึ้น (ข้อมูลงานยังดึงสดจาก Apps Script ทุกครั้ง)
-const CACHE = 'plan-event-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest',
+const CACHE = 'plan-event-v2';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './logo.png',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
