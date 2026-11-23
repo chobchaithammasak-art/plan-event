@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR ติดตั้ง Plan งาน Event</title>
+<link rel="icon" type="image/png" href="icons/favicon-32.png">
+<style>
+  @page { size:A4; margin:12mm; }
+  body { margin:0; font-family:"Sarabun","Noto Sans Thai","Segoe UI",system-ui,sans-serif; color:#1d2433; display:flex; justify-content:center; }
+  .sheet { width:100%; max-width:720px; text-align:center; padding:24px; }
+  .bar { height:14px; background:#0C61A7; border-radius:7px; margin-bottom:24px; }
+  .logo { font-size:34px; font-style:italic; font-weight:900; letter-spacing:.5px; }
+  .logo .m { color:#C51F36; } .logo .k { color:#0C61A7; }
+  .sub { color:#5b6475; margin-top:2px; }
+  .head { display:flex; align-items:center; justify-content:center; gap:16px; margin:26px 0 6px; }
+  .head img { width:84px; height:84px; border-radius:20px; }
+  h1 { margin:0; font-size:34px; color:#0C61A7; text-align:left; }
+  h1 small { display:block; font-size:16px; color:#5b6475; font-weight:400; }
+  .qr { display:inline-block; width:340px; height:340px; border:10px solid #fff; outline:3px solid #0C61A7; border-radius:12px; margin:18px 0 8px; }
+  .url { font-size:15px; color:#0C61A7; word-break:break-all; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; text-align:left; margin-top:26px; }
+  .box { border:2px solid #E6F1FB; border-radius:14px; padding:14px 16px; }
+  .box h3 { margin:0 0 6px; font-size:18px; }
+  .box.a h3 { color:#1a7f37; } .box.i h3 { color:#1d2433; }
+  ol { margin:0; padding-left:20px; line-height:1.8; font-size:15px; }
+  .note { margin-top:18px; font-size:13px; color:#7a3d12; background:#FFF4EC; border-radius:10px; padding:10px; }
+  .bar2 { height:8px; background:linear-gradient(90deg,#C51F36 0 50%,#E1885A 50%); border-radius:4px; margin-top:24px; }
+  .print { margin:18px auto 0; padding:10px 22px; border:0; border-radius:10px; background:#C51F36; color:#fff; font-size:16px; cursor:pointer; font-family:inherit; }
+  @media print { .print { display:none; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="bar"></div>
+  <div class="logo"><span class="m">MASTER</span><span class="k">KOOL</span></div>
+  <div class="sub">CL Tech Living</div>
+  <div class="head">
+    <img src="icons/icon-512.png" alt="">
+    <h1>Plan งาน Event<small>สแกนเพื่อติดตั้งแอปบนมือถือ</small></h1>
+  </div>
+  <div class="qr" id="qr"></div>
+  <div class="url" id="url"></div>
+  <div class="cols">
+    <div class="box a">
+      <h3>Android</h3>
+      <ol><li>สแกน QR เปิดด้วย Chrome</li><li>กด <b>ติดตั้งแอป</b><br>(หรือ ⋮ → ติดตั้งแอป)</li></ol>
+    </div>
+    <div class="box i">
+      <h3>iPhone / iPad</h3>
+      <ol><li>สแกน QR เปิดด้วย <b>Safari</b></li><li>กด แชร์ → <b>เพิ่มไปยังหน้าจอโฮม</b></li></ol>
+    </div>
+  </div>
+  <div class="note">ถ้าสแกนแล้วเปิดในแอป LINE ให้กด ⋯ → เปิดในเบราว์เซอร์ ก่อนติดตั้ง</div>
+  <div class="bar2"></div>
+  <button class="print" onclick="print()">พิมพ์</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+const site = location.origin + location.pathname.replace(/qr\.html$/, '');
+document.getElementById('url').textContent = site;
+const q = qrcode(0, 'M'); q.addData(site + '?openExternalBrowser=1'); q.make();
+document.getElementById('qr').innerHTML = q.createSvgTag({ cellSize: 10, margin: 0 }).replace(/fill="black"|fill="#000000"/g, 'fill="#0C61A7"');
+</script>
+<style>.qr svg { width:100%; height:100%; }</style>
+</body>
+</html>

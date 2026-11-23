@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plan งาน Event</title>
+<meta name="description" content="Plan งาน Event — MASTERKOOL / CL Tech Living">
+<meta name="theme-color" content="#0C61A7">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Plan งาน">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --blue:#0C61A7; --blue2:#1275B7; --red:#C51F36; --orange:#E1885A; --ink:#1d2433; --muted:#5b6475; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; font-family:"Sarabun","Noto Sans Thai","Segoe UI",system-ui,-apple-system,sans-serif; color:var(--ink); background:#fff; }
+  .hidden { display:none !important; }
+
+  /* ---------- โหมดแอป ---------- */
+  #app { position:fixed; inset:0; display:flex; flex-direction:column; background:var(--blue); }
+  #app .inset { height:env(safe-area-inset-top); background:var(--blue); flex:none; }
+  #splash { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; background:var(--blue); color:#fff; transition:opacity .3s; }
+  #splash img { width:112px; height:112px; border-radius:26px; }
+  #splash .t { font-size:20px; font-weight:600; }
+  .spin { width:28px; height:28px; border:3px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:s 1s linear infinite; }
+  @keyframes s { to { transform:rotate(360deg); } }
+  #slow { font-size:14px; text-align:center; padding:0 24px; }
+  #slow a { color:#fff; }
+
+  /* ---------- หน้าติดตั้ง ---------- */
+  #install { min-height:100%; }
+  .hero { background:var(--blue); color:#fff; padding:calc(28px + env(safe-area-inset-top)) 20px 64px; text-align:center; position:relative; overflow:hidden; }
+  .hero::after { content:""; position:absolute; left:0; right:0; bottom:0; height:70px; background:var(--blue2); clip-path:polygon(0 70%,100% 0,100% 100%,0 100%); }
+  .hero img { width:96px; height:96px; border-radius:22px; box-shadow:0 6px 20px rgba(0,0,0,.25); position:relative; z-index:1; }
+  .hero h1 { margin:14px 0 4px; font-size:24px; position:relative; z-index:1; }
+  .hero p { margin:0; opacity:.9; font-size:14px; position:relative; z-index:1; }
+  .brand { font-style:italic; font-weight:800; letter-spacing:.3px; }
+  .wrap { max-width:520px; margin:-36px auto 0; padding:0 16px 32px; position:relative; z-index:2; }
+  .card { background:#fff; border-radius:16px; box-shadow:0 2px 14px rgba(12,97,167,.14); padding:18px; margin-bottom:14px; }
+  .card h2 { margin:0 0 10px; font-size:17px; display:flex; align-items:center; gap:8px; }
+  .tag { font-size:12px; font-weight:600; padding:2px 8px; border-radius:20px; background:#E6F1FB; color:var(--blue); }
+  ol { margin:0; padding-left:22px; line-height:1.9; font-size:15px; }
+  .btn { display:block; width:100%; border:0; border-radius:12px; padding:14px; font-size:16px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; font-family:inherit; }
+  .btn-main { background:var(--red); color:#fff; }
+  .btn-ghost { background:#E6F1FB; color:var(--blue); margin-top:10px; }
+  .warn { background:#FFF4EC; border:1px solid var(--orange); color:#7a3d12; border-radius:12px; padding:12px 14px; font-size:14px; margin-bottom:14px; line-height:1.6; }
+  .ico { display:inline-flex; vertical-align:-4px; }
+  .qr { text-align:center; }
+  #qrBox svg { width:200px; height:200px; }
+  .qr .url { font-size:13px; color:var(--muted); word-break:break-all; margin-top:6px; }
+  .foot { text-align:center; font-size:12px; color:var(--muted); }
+  .done { text-align:center; color:#1a7f37; font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- ================= โหมดแอป (เปิดจากไอคอนบนหน้าจอ) ================= -->
+<div id="app" class="hidden">
+  <div class="inset"></div>
+  <div id="splash">
+    <img src="icons/icon-512.png" alt="">
+    <div class="t">Plan งาน Event</div>
+    <div class="spin"></div>
+    <div id="slow" class="hidden">ใช้เวลานานกว่าปกติ ตรวจสอบอินเทอร์เน็ต<br><a href="#" id="retry">ลองใหม่</a></div>
+  </div>
+</div>
+
+<!-- ================= หน้าติดตั้ง ================= -->
+<div id="install" class="hidden">
+  <div class="hero">
+    <img src="icons/icon-512.png" alt="ไอคอน Plan งาน Event">
+    <h1>Plan งาน Event</h1>
+    <p><span class="brand" style="color:#fff">MASTERKOOL</span> · CL Tech Living</p>
+  </div>
+
+  <div class="wrap">
+    <div id="inApp" class="warn hidden">
+      กำลังเปิดในแอป <b id="inAppName">LINE</b> ซึ่งติดตั้งไอคอนไม่ได้<br>
+      กด <b>⋯</b> มุมขวาบน แล้วเลือก <b id="inAppOpen">เปิดในเบราว์เซอร์</b>
+    </div>
+
+    <div id="installedMsg" class="card done hidden">ติดตั้งแล้ว ✓ เปิดจากไอคอน “Plan งาน” บนหน้าจอได้เลย</div>
+
+    <!-- Android -->
+    <div id="android" class="card hidden">
+      <h2>ติดตั้งบน Android <span class="tag">Chrome</span></h2>
+      <button id="btnInstall" class="btn btn-main hidden">ติดตั้งแอป</button>
+      <ol id="androidSteps">
+        <li>เปิดหน้านี้ด้วย <b>Chrome</b></li>
+        <li>กด <b>⋮</b> มุมขวาบน</li>
+        <li>เลือก <b>ติดตั้งแอป</b> หรือ <b>เพิ่มลงในหน้าจอหลัก</b></li>
+        <li>กด <b>ติดตั้ง</b> — ไอคอนจะขึ้นบนหน้าจอ</li>
+      </ol>
+    </div>
+
+    <!-- iPhone / iPad -->
+    <div id="ios" class="card hidden">
+      <h2>ติดตั้งบน iPhone / iPad <span class="tag">Safari</span></h2>
+      <div id="iosNotSafari" class="warn hidden">ต้องเปิดหน้านี้ด้วย <b>Safari</b> ก่อน — คัดลอกลิงก์แล้ววางใน Safari</div>
+      <ol>
+        <li>กดปุ่ม <b>แชร์</b>
+          <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C61A7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>
+          ด้านล่าง (หรือ ⋯ ด้านขวา)</li>
+        <li>เลื่อนลง เลือก <b>เพิ่มไปยังหน้าจอโฮม</b>
+          <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C61A7" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span></li>
+        <li>กด <b>เพิ่ม</b> มุมขวาบน</li>
+      </ol>
+      <button id="btnCopy" class="btn btn-ghost">คัดลอกลิงก์</button>
+    </div>
+
+    <!-- คอมพิวเตอร์: แสดง QR ให้สแกน -->
+    <div id="desktop" class="card qr hidden">
+      <h2 style="justify-content:center">สแกนด้วยมือถือเพื่อติดตั้ง</h2>
+      <div id="qrBox"></div>
+      <div class="url" id="siteUrl"></div>
+      <button id="btnInstallDesk" class="btn btn-main hidden" style="margin-top:12px">ติดตั้งบนคอมพิวเตอร์นี้</button>
+    </div>
+
+    <div class="card">
+      <button id="btnOpen" class="btn btn-ghost" style="margin-top:0">ใช้งานบนเว็บเลย (ไม่ติดตั้ง)</button>
+    </div>
+    <p class="foot">Plan งาน Event · <a href="qr.html">พิมพ์ QR ติดบอร์ด</a></p>
+  </div>
+</div>
+
+<script>
+/* ลิงก์ Web App (Apps Script → Deploy → Web app URL) */
+const APP_URL = 'https://script.google.com/macros/s/AKfycbzz4Pm2EvxyWfFDs0iZt50j3jlHZUOOD97HHSsQKDKgPwLjC24F33hj-IgeG61yrozT/exec';
+
+const ua = navigator.userAgent;
+const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = /Android/i.test(ua);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const params = new URLSearchParams(location.search);
+const $ = id => document.getElementById(id);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+function openApp() {
+  $('install').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  document.body.style.background = '#0C61A7';
+  setTimeout(() => $('slow').classList.remove('hidden'), 12000);
+  $('retry').onclick = e => { e.preventDefault(); location.replace(APP_URL); };
+  location.replace(APP_URL);
+}
+
+function showInstall() {
+  $('install').classList.remove('hidden');
+  const site = location.origin + location.pathname.replace(/index\.html$/, '');
+  $('siteUrl').textContent = site;
+  drawQR(site);
+
+  // เปิดอยู่ในแอปแชท (LINE / Facebook / Messenger / IG) → ติดตั้งไม่ได้
+  const inApp = /Line\//i.test(ua) ? 'LINE' : /FBAN|FBAV|FB_IAB/i.test(ua) ? 'Facebook' : /Instagram/i.test(ua) ? 'Instagram' : '';
+  if (inApp) {
+    $('inAppName').textContent = inApp;
+    $('inAppOpen').textContent = isIOS ? 'เปิดใน Safari' : 'เปิดในเบราว์เซอร์ / Chrome';
+    $('inApp').classList.remove('hidden');
+  }
+
+  if (isIOS) {
+    $('ios').classList.remove('hidden');
+    if (!inApp && /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)) $('iosNotSafari').classList.remove('hidden');
+  } else if (isAndroid) {
+    $('android').classList.remove('hidden');
+  } else {
+    $('desktop').classList.remove('hidden');
+  }
+
+  $('btnOpen').onclick = openApp;
+  $('btnCopy').onclick = async () => {
+    try { await navigator.clipboard.writeText(site); $('btnCopy').textContent = 'คัดลอกแล้ว ✓'; }
+    catch (e) { prompt('คัดลอกลิงก์นี้', site); }
+  };
+}
+
+function drawQR(site) {
+  const sc = document.createElement('script');
+  sc.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+  sc.onload = () => { const q = qrcode(0, 'M'); q.addData(site + '?openExternalBrowser=1'); q.make();
+    $('qrBox').innerHTML = q.createSvgTag({ cellSize: 6, margin: 2 }).replace(/fill="black"|fill="#000000"/g, 'fill="#0C61A7"'); };
+  document.head.appendChild(sc);
+}
+
+// Android / คอมพิวเตอร์: ปุ่มติดตั้งในคลิกเดียว (Chrome / Edge)
+let deferred = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferred = e;
+  $('btnInstall').classList.remove('hidden');
+  $('btnInstallDesk').classList.remove('hidden');
+});
+async function doInstall() {
+  if (!deferred) return;
+  deferred.prompt();
+  const r = await deferred.userChoice; deferred = null;
+  if (r.outcome === 'accepted') { $('btnInstall').classList.add('hidden'); $('btnInstallDesk').classList.add('hidden'); }
+}
+$('btnInstall').onclick = doInstall;
+$('btnInstallDesk').onclick = doInstall;
+window.addEventListener('appinstalled', () => $('installedMsg').classList.remove('hidden'));
+
+if (isStandalone || params.get('app') === '1') openApp(); else showInstall();
+</script>
+</body>
+</html>
